@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: spring-bff
+  security:
+    user:
+      name: user1
+      password: 123456
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: spring-angular-bff
+            # local creds, nbd:
+            client-secret: nXVQsCBP28KICFsi5CjS2n9jPM9qwZ4w
+            authorization-grant-type: authorization_code
+            scope: openid, profile, email
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8080/realms/spring-resource-users
+            # rest of the URLs should be dynamically retrieved by spring
+
+server:
+  port: 8081
+
+logging:
+  level:
+    org:
+      springframework: INFO
