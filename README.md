@@ -18,7 +18,7 @@ docker compose up
 - Create client `spring-angular-bff` with
     - `http://localhost:4200` as home URL
     - `http://localhost:8081/login/oauth2/code/keycloak` as valid redirect URI
-    - `http://localhost:8081/` as valid post logout redirect URI
+    - `http://localhost:8081/*` as valid post logout redirect URI
     - `http://localhost:4200` as web origins
     - Client authentication enabled. Standard flow.
     - **Client secret** will be generated.
