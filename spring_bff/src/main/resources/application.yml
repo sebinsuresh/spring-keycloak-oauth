@@ -11,7 +11,7 @@ spring:
           keycloak:
             client-id: spring-angular-bff
             # local creds, nbd:
-            client-secret: nXVQsCBP28KICFsi5CjS2n9jPM9qwZ4w
+            client-secret: c0FGGZx5irkpRBqTnvZdQ3vgWZJ6L9U1
             authorization-grant-type: authorization_code
             scope: openid, profile, email
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
