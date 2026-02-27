@@ -15,25 +15,22 @@ public class SecurityFilter {
 
     @Bean
     public SecurityFilterChain filterChain(
-        HttpSecurity http,
-        ClientRegistrationRepository registrations) throws Exception {
+            HttpSecurity http,
+            ClientRegistrationRepository registrations) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/").permitAll()
-                    .anyRequest().authenticated()
-                )
+                        .requestMatchers("/").permitAll()
+                        .anyRequest().authenticated())
                 .oauth2Login(oauth2 -> oauth2
-                    .defaultSuccessUrl("/secure", false)
-                )
+                        .defaultSuccessUrl("/secure", false))
                 .logout(logout -> logout
-                    .logoutSuccessHandler(oidcLogoutSuccessHandler(registrations))
-                )
+                        .logoutSuccessHandler(oidcLogoutSuccessHandler(registrations)))
                 .build();
     }
 
     @Bean
     public LogoutSuccessHandler oidcLogoutSuccessHandler(
-        ClientRegistrationRepository registrations) {
+            ClientRegistrationRepository registrations) {
         var handler = new OidcClientInitiatedLogoutSuccessHandler(registrations);
         handler.setPostLogoutRedirectUri("{baseUrl}/?logout=true");
         return handler;
