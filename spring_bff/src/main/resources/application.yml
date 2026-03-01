@@ -14,14 +14,15 @@ spring:
             client-secret: c0FGGZx5irkpRBqTnvZdQ3vgWZJ6L9U1
             authorization-grant-type: authorization_code
             scope: openid, profile, email
-            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            redirect-uri: "{baseUrl}/api/login/oauth2/code/{registrationId}"
         provider:
           keycloak:
-            issuer-uri: http://localhost:8080/realms/spring-resource-users
+            issuer-uri: http://localhost/auth/realms/spring-resource-users
             # rest of the URLs should be dynamically retrieved by spring
 
 server:
   port: 8081
+  forward-headers-strategy: native
 
 logging:
   level:

@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController()
 public class UserController {
 
-    @GetMapping("/api/me")
+    @GetMapping("/me")
     public Map<String, Object> getMe(@AuthenticationPrincipal OidcUser user) {
         // TODO: implement proper solution:
         // This is a workaround for auth & cors related issue: allow requests to
-        // /api/me, but return null if not authenticated.
+        // /me, but return null if not authenticated.
         if (user == null) {
             return null;
         }

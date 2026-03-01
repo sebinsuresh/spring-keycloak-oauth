@@ -20,18 +20,16 @@ public class SecurityFilter {
             ClientRegistrationRepository registrations) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/",
-                                "/api/me"// TODO: workaround - see user controller
-                        )
+                        // TODO: /me being here is a workaround - see user controller
+                        .requestMatchers("/", "/me")
                         .permitAll()
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2 -> oauth2
-                        .defaultSuccessUrl("http://localhost:4200/", true))
+                        .defaultSuccessUrl("http://localhost/", true))
                 .logout(logout -> logout
                         .logoutRequestMatcher(PathPatternRequestMatcher
                                 .withDefaults()
-                                .matcher("/api/logout"))
+                                .matcher("/logout"))
                         .logoutSuccessHandler(oidcLogoutSuccessHandler(registrations)))
                 .build();
     }
@@ -40,7 +38,7 @@ public class SecurityFilter {
     public LogoutSuccessHandler oidcLogoutSuccessHandler(
             ClientRegistrationRepository registrations) {
         var handler = new OidcClientInitiatedLogoutSuccessHandler(registrations);
-        handler.setPostLogoutRedirectUri("http://localhost:4200/");
+        handler.setPostLogoutRedirectUri("http://localhost/");
         return handler;
     }
 }
