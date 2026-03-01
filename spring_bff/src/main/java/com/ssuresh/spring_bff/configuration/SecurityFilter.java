@@ -8,6 +8,7 @@ import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInit
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -19,11 +20,18 @@ public class SecurityFilter {
             ClientRegistrationRepository registrations) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/").permitAll()
+                        .requestMatchers(
+                                "/",
+                                "/api/me"// TODO: workaround - see user controller
+                        )
+                        .permitAll()
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2 -> oauth2
-                        .defaultSuccessUrl("/secure", false))
+                        .defaultSuccessUrl("http://localhost:4200/", true))
                 .logout(logout -> logout
+                        .logoutRequestMatcher(PathPatternRequestMatcher
+                                .withDefaults()
+                                .matcher("/api/logout"))
                         .logoutSuccessHandler(oidcLogoutSuccessHandler(registrations)))
                 .build();
     }
@@ -32,7 +40,7 @@ public class SecurityFilter {
     public LogoutSuccessHandler oidcLogoutSuccessHandler(
             ClientRegistrationRepository registrations) {
         var handler = new OidcClientInitiatedLogoutSuccessHandler(registrations);
-        handler.setPostLogoutRedirectUri("{baseUrl}/?logout=true");
+        handler.setPostLogoutRedirectUri("http://localhost:4200/");
         return handler;
     }
 }
