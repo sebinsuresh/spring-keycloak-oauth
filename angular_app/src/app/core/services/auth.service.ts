@@ -43,7 +43,7 @@ export class AuthService {
      * Redirect browser to OIDC login page.
      */
     login() {
-        window.location.href = "/oauth2/authorization/keycloak";
+        window.location.href = "/api/oauth2/authorization/keycloak";
     }
 
     /**
