@@ -11,11 +11,10 @@ services:
     #   - "host.docker.internal:host-gateway"
   keycloak:
     image: quay.io/keycloak/keycloak
-    command: start-dev --http-relative-path /auth
+    command: start-dev --hostname=http://localhost/auth --proxy-headers xforwarded
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
       KC_BOOTSTRAP_ADMIN_PASSWORD: admin
-      KC_PROXY: edge
       KC_HOSTNAME_STRICT: "false"
     volumes:
       - keycloak-volume:/opt/keycloak/data
