@@ -22,8 +22,6 @@ export class AuthService {
 
     /**
      * Fetch the current user from /api/me and populate auth state.
-     * The first call makes an HTTP request; subsequent calls return the
-     * same cached observable (shareReplay), so only one request is ever made.
      */
     loadUser(): Observable<UserProfile | null> {
         if (!this._loadUser$) {
@@ -48,10 +46,6 @@ export class AuthService {
 
     /**
      * Navigates the browser to the BFF logout endpoint.
-     * Spring will invalidate the session and redirect to Keycloak's end-session
-     * endpoint, then back to the app. Using window.location.href (full-page
-     * navigation) instead of HttpClient avoids the CORS error that occurs when
-     * Spring returns a cross-origin 302 redirect in response to an XHR request.
      */
     logout() {
         window.location.href = "/api/logout";

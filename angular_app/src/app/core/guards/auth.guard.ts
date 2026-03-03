@@ -15,13 +15,9 @@ export const authGuard: CanActivateFn = () => {
         return true;
     }
 
-    // loadUser() is cached — if app.ts already initiated it, this reuses
-    // the same in-flight observable and no second HTTP request is made.
     return auth.loadUser().pipe(
         map((user) => {
             if (user === null) {
-                // Explicitly navigate home so the router doesn't leave the
-                // outlet empty after cancelling the guarded route.
                 router.navigate(["/"]);
                 return false;
             }
