@@ -22,7 +22,8 @@ spring:
 
 server:
   port: 8081
-  forward-headers-strategy: native
+  forward-headers-strategy: native # Tomcat - doesn't handle X-Forwarded-Prefix
+  # forward-headers-strategy: framework # Spring - handles that prefix
 
 logging:
   level:

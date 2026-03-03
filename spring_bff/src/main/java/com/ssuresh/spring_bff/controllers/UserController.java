@@ -12,13 +12,6 @@ public class UserController {
 
     @GetMapping("/me")
     public Map<String, Object> getMe(@AuthenticationPrincipal OidcUser user) {
-        // TODO: implement proper solution:
-        // This is a workaround for auth & cors related issue: allow requests to
-        // /me, but return null if not authenticated.
-        if (user == null) {
-            return null;
-        }
-
         return Map.of(
                 "name", user.getFullName(),
                 "email", user.getEmail(),

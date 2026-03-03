@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 
@@ -20,10 +21,10 @@ public class SecurityFilter {
             ClientRegistrationRepository registrations) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> auth
-                        // TODO: /me being here is a workaround - see user controller
-                        .requestMatchers("/", "/me")
+                        .requestMatchers("/")
                         .permitAll()
                         .anyRequest().authenticated())
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(new Http403ForbiddenEntryPoint()))
                 .oauth2Login(oauth2 -> oauth2
                         .defaultSuccessUrl("http://localhost/", true))
                 .logout(logout -> logout
