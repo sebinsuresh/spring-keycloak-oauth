@@ -26,9 +26,16 @@ export class AuthService {
     loadUser(): Observable<UserProfile | null> {
         if (!this._loadUser$) {
             this._loadUser$ = this.http.get<UserProfile>("/api/me").pipe(
-                tap(user => this._user.set(user)),
+                tap(user => {
+                    this._user.set(user);
+                }),
                 catchError((err) => {
-                    console.error(err);
+                    if (err.status === 403) {
+                        console.debug("/me endpoint failed - not logged in");
+                    } else {
+                        console.error(err);
+                    }
+                    this._user.set(null);
                     return of(null);
                 }),
                 shareReplay(1),
@@ -48,6 +55,8 @@ export class AuthService {
      * Navigates the browser to the BFF logout endpoint.
      */
     logout() {
+        this._loadUser$ = null;
+        this._user.set(null);
         window.location.href = "/api/logout";
     }
 }
