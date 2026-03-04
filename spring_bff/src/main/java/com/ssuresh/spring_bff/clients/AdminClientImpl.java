@@ -1,16 +1,19 @@
 package com.ssuresh.spring_bff.clients;
 
-import java.util.Map;
+import java.util.Collection;
+import java.util.List;
 import org.springframework.stereotype.Service;
+
+import com.ssuresh.spring_bff.clients.models.UserInformation;
 
 @Service
 public class AdminClientImpl implements AdminClient {
 
     @Override
-    public Map<String, String> getUserList() {
-        // Let's pretend we got this data from some endpoint
-        return Map.of(
-                "testuser", "Test User",
-                "testadmin", "Admin Test");
+    public Collection<UserInformation> getUserList() {
+        // Let's pretend we got this data from some data source
+        return List.of(
+                new UserInformation("testuser", "Test User"),
+                new UserInformation("testadmin", "Admin Test"));
     }
 }
