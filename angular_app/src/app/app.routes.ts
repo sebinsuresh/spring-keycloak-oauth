@@ -3,6 +3,7 @@ import { authGuard } from './core/guards/auth.guard';
 import { Profile } from './features/profile/profile';
 import { Home } from './features/home/home';
 import { Admin } from './features/admin/admin';
+import { adminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
     {
@@ -16,8 +17,8 @@ export const routes: Routes = [
     },
     {
         path: "admin",
-        // TODO: add admin guard
-        canActivate: [authGuard],
+        // TODO: Visiting URL manually not working
+        canActivate: [authGuard, adminGuard],
         component: Admin,
     },
     {
