@@ -30,7 +30,7 @@ export class AuthService {
                     this._user.set(user);
                 }),
                 catchError((err) => {
-                    if (err.status === 403) {
+                    if (err.status === 401) {
                         console.debug("/me endpoint failed - not logged in");
                     } else {
                         console.error(err);
