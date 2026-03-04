@@ -36,16 +36,7 @@ export class AuthService {
         if (this._userData() === null) {
             return false;
         }
-
-        const realmAccess = this._userData()?.claims["realm_access"];
-        if (!realmAccess ||
-            typeof realmAccess !== "object" ||
-            !("roles" in realmAccess) ||
-            !Array.isArray(realmAccess.roles)
-        ) {
-            return false;
-        }
-        return realmAccess.roles.includes("admin");
+        return this.checkUserIsAdmin(this._userData());
     });
 
     /**
@@ -86,5 +77,17 @@ export class AuthService {
         this._loadUser$ = null;
         this._userData.set(null);
         window.location.href = "/api/logout";
+    }
+
+    private checkUserIsAdmin(userData: UserData | null): boolean {
+        const realmAccess = userData?.claims["realm_access"];
+        if (!realmAccess ||
+            typeof realmAccess !== "object" ||
+            !("roles" in realmAccess) ||
+            !Array.isArray(realmAccess.roles)
+        ) {
+            return false;
+        }
+        return realmAccess.roles.includes("admin");
     }
 }

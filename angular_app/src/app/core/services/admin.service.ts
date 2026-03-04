@@ -17,11 +17,11 @@ export class AdminService {
     listUsers(): Observable<Array<UserInformation> | null> {
         if (!this._userInfo$) {
             this._userInfo$ = this._http
-                .get<Array<UserInformation>>("/api/admin/userdata")
+                .get<Array<UserInformation>>("/api/admin/listusers")
                 .pipe(
                     catchError(err => {
                         console.error(
-                            "/admin/userdata endpoint failed with error",
+                            "/admin/listusers endpoint failed with error",
                             err
                         );
                         return of(null);

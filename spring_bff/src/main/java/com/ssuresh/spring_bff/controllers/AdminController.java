@@ -17,7 +17,7 @@ public class AdminController {
     @Autowired
     private final AdminClient adminClient = null;
 
-    @GetMapping("/userdata")
+    @GetMapping("/listusers")
     public Collection<UserInformation> getUserList() {
         return adminClient.getUserList();
     }
