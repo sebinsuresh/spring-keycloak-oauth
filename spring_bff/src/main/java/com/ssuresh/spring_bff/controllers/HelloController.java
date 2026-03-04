@@ -1,7 +1,10 @@
 package com.ssuresh.spring_bff.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
@@ -33,6 +36,11 @@ public class HelloController {
                 "keycloak",
                 authentication.getName());
         var token = client.getAccessToken().getTokenValue();
+        List<String> roles = authentication.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+        s += "Your roles are: %s<br />".formatted(roles);
 
         s += "The access token is: '%s'".formatted(token);
 
