@@ -25,7 +25,7 @@ export class AuthService {
      */
     loadUser(): Observable<UserProfile | null> {
         if (!this._loadUser$) {
-            this._loadUser$ = this.http.get<UserProfile>("/api/me").pipe(
+            this._loadUser$ = this.http.get<UserProfile>("/api/user/me").pipe(
                 tap(user => {
                     this._user.set(user);
                 }),
