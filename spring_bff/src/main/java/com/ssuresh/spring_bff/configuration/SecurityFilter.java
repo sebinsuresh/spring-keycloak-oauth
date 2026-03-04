@@ -61,11 +61,9 @@ public class SecurityFilter {
     @Bean
     public GrantedAuthoritiesMapper keyCloakUserRolesMapper() {
         return (Collection<? extends GrantedAuthority> authorities) -> {
-            Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
+            Set<GrantedAuthority> mappedAuthorities = new HashSet<>(authorities);
 
             authorities.forEach(authority -> {
-                mappedAuthorities.add(authority);
-
                 if (authority instanceof OidcUserAuthority oidcAuth) {
                     var realmAccessObj = oidcAuth.getAttributes().get("realm_access");
                     if (!(realmAccessObj instanceof Map<?, ?> realmMap)) {
