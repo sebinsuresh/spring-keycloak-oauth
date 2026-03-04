@@ -1,7 +1,6 @@
 import { inject } from "@angular/core";
 import { CanActivateFn, Router } from "@angular/router";
 import { AuthService } from "../services/auth.service";
-import { map } from "rxjs";
 
 /**
  * Verified logged in by attempting to load current authenticated user.
@@ -13,15 +12,8 @@ export const authGuard: CanActivateFn = () => {
 
     if (auth.isAuthenticated()) {
         return true;
+    } else {
+        router.navigate(["/"]);
+        return false;
     }
-
-    return auth.loadUser().pipe(
-        map((user) => {
-            if (user === null) {
-                router.navigate(["/"]);
-                return false;
-            }
-            return true;
-        }),
-    );
 };
