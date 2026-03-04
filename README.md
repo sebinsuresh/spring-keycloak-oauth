@@ -24,6 +24,17 @@ docker compose up
     - **Client secret** will be generated.
 - Create user `testuser` `123456` `testuser@example.com`
 - Create user `testadmin` `123456` `testadmin@example.com`
+- Auth setup
+    - Create roles `admin` and `regular_user`
+    - Create groups `admin` and `user`
+        - Add both roles to `admin` group, only `regular_user` role to `user` group
+    - Add `testuser` to `user` group, `testadmin` to `admin` group
+    - To ensure `realm_access.roles` is present in the JWT returned to Spring BFF:
+        - Go to Keycloak admin UI -> `spring-resource-users` realm
+        - Go to `Client Scopes -> roles -> Mappers -> Realm Roles -> Enable Add to UserInfo -> Save`
+        - This is required for role-based authentication rules in Spring security to work correctly.
+            The reason is that Keycloak sends these roles with the JWT access & ID tokens but not with\
+            the UserInfo endpoint, which Spring Security uses to get the authorities.
 
 ### Destroy
 
