@@ -17,7 +17,6 @@ export const routes: Routes = [
     },
     {
         path: "admin",
-        // TODO: Visiting URL manually not working
         canActivate: [authGuard, adminGuard],
         component: Admin,
     },
