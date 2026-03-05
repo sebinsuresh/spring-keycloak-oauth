@@ -5,6 +5,7 @@ import { HttpInterceptorFn } from "@angular/common/http";
  * HTTP Client using this should be only used for BFF requests.
  */
 export const credentialsInterceptor: HttpInterceptorFn = (req, next) => {
-    const withCredentials = req.clone({ withCredentials: true, });
-    return next(withCredentials);
+    const isBffCall = req.url.startsWith("/api/");
+    const withCredentialsMaybe = isBffCall ? req.clone({ withCredentials: true, }) : req;
+    return next(withCredentialsMaybe);
 };
