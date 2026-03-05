@@ -1,7 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { AuthService } from './core/services/auth.service';
-import { take } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -10,14 +9,8 @@ import { take } from 'rxjs';
   templateUrl: 'app.html',
   styleUrl: 'app.scss',
 })
-export class App implements OnInit {
+export class App {
   readonly auth = inject(AuthService);
-
-  ngOnInit(): void {
-    this.auth.loadUser().pipe(
-      take(1),
-    ).subscribe();
-  }
 
   logout() {
     this.auth.logout();

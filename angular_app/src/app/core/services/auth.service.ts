@@ -15,10 +15,10 @@ export interface UserData extends UserProfile {
 export class AuthService {
     private readonly http = inject(HttpClient);
 
-    private readonly _userData = signal<UserData | null>(null);
-    // Cached observable so that multiple subscribers (app.ts + authGuard)
+    // Cached observable so that multiple subscribers (app.ts, guards)
     // never trigger more than one HTTP request.
     private _loadUser$: Observable<UserProfile | null> | null = null;
+    private readonly _userData = signal<UserData | null>(null);
 
     readonly user: Signal<UserProfile | null> = computed(() => {
         if (this._userData() === null) {
@@ -29,21 +29,19 @@ export class AuthService {
             email: this._userData()!.email,
         }
     });
-
     readonly isAuthenticated = computed(() => this._userData() !== null);
-
     readonly isAdmin = computed(() => {
         if (this._userData() === null) {
             return false;
         }
-        return this.checkUserIsAdmin(this._userData());
+        return this.hasRole(this._userData(), "admin");
     });
 
     /**
      * Fetch the current user from `/api/me` and populate auth state.
      */
     loadUser(): Observable<UserProfile | null> {
-        if (!this._loadUser$) {
+        if (this._loadUser$ === null) {
             this._loadUser$ = this.http.get<UserData>("/api/user/me").pipe(
                 tap(userData => {
                     this._userData.set(userData);
@@ -79,8 +77,9 @@ export class AuthService {
         window.location.href = "/api/logout";
     }
 
-    private checkUserIsAdmin(userData: UserData | null): boolean {
-        const realmAccess = userData?.claims["realm_access"];
+    private hasRole(userData: UserData | null, role: string): boolean {
+        if (!userData) return false;
+        const realmAccess = userData.claims["realm_access"];
         if (!realmAccess ||
             typeof realmAccess !== "object" ||
             !("roles" in realmAccess) ||
@@ -88,6 +87,6 @@ export class AuthService {
         ) {
             return false;
         }
-        return realmAccess.roles.includes("admin");
+        return realmAccess.roles.includes(role);
     }
 }

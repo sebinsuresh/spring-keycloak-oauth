@@ -8,6 +8,32 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body>
-  <app-root></app-root>
+  <app-root>
+    <style>
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .container {
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      h1 {
+          display: inline-block;
+      }
+      .spinner {
+        display: inline-block;
+        animation: spin 0.8s linear infinite;
+      }
+      @keyframes spin {
+        to { transform: rotate(-360deg); }
+      }
+    </style>
+    <div class="container">
+      <h2 class="spinner">😔</h2>
+      <h1>CHECKING IF U LOGGED IN OR NOT</h1>
+      <h2 class="spinner">🤔</h2>
+    </div>
+  </app-root>
 </body>
 </html>
