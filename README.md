@@ -36,6 +36,18 @@ docker compose up
             The reason is that Keycloak sends these roles with the JWT access & ID tokens but not with\
             the UserInfo endpoint, which Spring Security uses to get the authorities.
 
+Run Angular using host 0.0.0.0 so that nginx in docker can reach it:
+```bash
+cd angular_app
+pnpm start --host=0.0.0.0
+```
+
+Run Spring Boot BFF service:
+```bash
+cd spring_bff
+./gradlew start
+```
+
 ### Destroy
 
 Delete keycloak container:

@@ -30,7 +30,8 @@ public class SecurityFilter {
     @Bean
     public SecurityFilterChain filterChain(
             HttpSecurity http,
-            ClientRegistrationRepository registrations) throws Exception {
+            ClientRegistrationRepository registrations,
+            LogoutSuccessHandler logoutSuccessHandler) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/").permitAll()
@@ -48,7 +49,7 @@ public class SecurityFilter {
                         .logoutRequestMatcher(PathPatternRequestMatcher
                                 .withDefaults()
                                 .matcher("/logout"))
-                        .logoutSuccessHandler(oidcLogoutSuccessHandler(registrations)))
+                        .logoutSuccessHandler(logoutSuccessHandler))
                 .build();
     }
 
