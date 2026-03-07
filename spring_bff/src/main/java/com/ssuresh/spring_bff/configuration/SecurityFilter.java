@@ -62,7 +62,9 @@ public class SecurityFilter {
     }
 
     // There is no OIDC standard for where to put roles in the JWT yet.
-    // Keycloak puts roles under realm_access field.
+    // Keycloak puts roles under realm_access field in a user token if configured as
+    // such (by default it only puts them in access token - see README at root to
+    // see how to configure this).
     // We need to tell Spring to find the roles in there manualy.
     @Bean
     public GrantedAuthoritiesMapper keyCloakUserRolesMapper() {
