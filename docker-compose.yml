@@ -14,6 +14,17 @@ services:
       KC_HOSTNAME_STRICT: "false" # TODO - what is it
     volumes:
       - keycloak-volume:/opt/keycloak/data
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: appdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
 
 volumes:
   keycloak-volume:
+  pgdata:

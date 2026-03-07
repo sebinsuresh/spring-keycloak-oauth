@@ -16,6 +16,14 @@ spring:
           keycloak:
             issuer-uri: http://localhost/auth/realms/spring-resource-users
             # rest of the URLs should be dynamically retrieved by spring
+  datasource:
+    url: jdbc:postgresql://localhost:5432/appdb
+    username: myuser
+    password: mypassword
+  jpa:
+    hibernate:
+      ddl-auto: update # change to 'validate' later
+    open-in-view: false # disable "OSIV" - ensure lazy loading issues are shown and forces dev to handle them
 
 server:
   port: 8081
