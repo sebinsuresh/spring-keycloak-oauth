@@ -24,6 +24,10 @@ spring:
     hibernate:
       ddl-auto: update # change to 'validate' later
     open-in-view: false # disable "OSIV" - ensure lazy loading issues are shown and forces dev to handle them
+  session:
+    store-type: jdbc
+    jdbc:
+      initialize-schema: always
 
 server:
   port: 8081
