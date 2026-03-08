@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: spring_resource
+  datasource:
+    url: jdbc:postgresql://localhost:5432/appdb
+    username: myuser
+    password: mypassword
+  jpa:
+    hibernate:
+      ddl-auto: update # change to 'validate' later
+    open-in-view: false # disable "OSIV" - ensure lazy loading issues are handled by dev
+
+server:
+  port: 8082
+  forward-headers-strategy: native
+
+logging:
+  level:
+    org:
+      springframework: INFO
