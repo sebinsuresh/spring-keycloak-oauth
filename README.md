@@ -22,6 +22,8 @@ docker compose up
     - `http://localhost` and `http://localhost/*` as web origins
     - Client authentication enabled. Standard flow.
     - **Client secret** will be generated.
+        - This will be a different value every time you re-create the client (i.e. you used `docker compose down -v` when bringing down services).
+        - Make sure the current client secret is used to populate value in `application.yml`
 - Create user `testuser` `123456` `testuser@example.com`
 - Create user `testadmin` `123456` `testadmin@example.com`
 - Auth setup
