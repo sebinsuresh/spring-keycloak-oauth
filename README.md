@@ -50,13 +50,13 @@ cd spring_bff
 
 ### Destroy
 
-Delete keycloak container:
+Bring down docker compose services:
 
 ```bash
 docker compose down
 ```
 
-Add the `-v` param if you want to remove the volume as well - this will destroy the realm & data you've created in Keycloak.
+Add the `-v` param if you want to remove the volume as well - this will destroy the realm & data you've created in Keycloak and Postgres.
 
 ## Run
 
