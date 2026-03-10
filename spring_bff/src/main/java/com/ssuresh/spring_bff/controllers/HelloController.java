@@ -2,7 +2,6 @@ package com.ssuresh.spring_bff.controllers;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,8 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HelloController {
 
-    @Autowired
-    private final OAuth2AuthorizedClientService clientService = null;
+    private final OAuth2AuthorizedClientService clientService;
+
+    public HelloController(OAuth2AuthorizedClientService clientService) {
+        this.clientService = clientService;
+    }
 
     @GetMapping("/")
     public String hello() {

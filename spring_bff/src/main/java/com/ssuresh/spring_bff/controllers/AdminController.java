@@ -15,7 +15,11 @@ import com.ssuresh.spring_bff.clients.models.UserInformation;
 public class AdminController {
 
     @Autowired
-    private final AdminClient adminClient = null;
+    private final AdminClient adminClient;
+
+    public AdminController(AdminClient adminClient) {
+        this.adminClient = adminClient;
+    }
 
     @GetMapping("/listusers")
     public Collection<UserInformation> getUserList() {
