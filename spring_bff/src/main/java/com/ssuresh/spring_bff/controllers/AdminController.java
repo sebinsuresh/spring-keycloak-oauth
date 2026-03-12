@@ -10,16 +10,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ssuresh.spring_bff.clients.AdminClient;
 import com.ssuresh.spring_bff.clients.models.UserInformation;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
 
     @Autowired
     private final AdminClient adminClient;
-
-    public AdminController(AdminClient adminClient) {
-        this.adminClient = adminClient;
-    }
 
     @GetMapping("/listusers")
     public Collection<UserInformation> getUserList() {
