@@ -17,10 +17,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.Getter;
 
+@Getter
 @Entity
 @Table(name = "employees")
-public class Employee {
+public class EmployeeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
@@ -32,18 +34,15 @@ public class Employee {
     private String name;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.LAZY)
-    @CollectionTable(
-        name = "employee_roles",
-        joinColumns = @JoinColumn(name = "employee_id")
-    )
+    @CollectionTable(name = "employee_roles", joinColumns = @JoinColumn(name = "employee_id"))
     @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
-    @JoinColumn(nullable = true)
-    private Team team;
+    @JoinColumn(nullable = true, name = "team_id")
+    private TeamEntity team;
 
     @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY)
-    private List<CalendarEvent> events;
+    private List<CalendarEventEntity> events;
 }

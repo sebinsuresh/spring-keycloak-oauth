@@ -16,7 +16,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "calendar_events")
-public class CalendarEvent {
+public class CalendarEventEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
@@ -42,5 +42,5 @@ public class CalendarEvent {
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_id", nullable = false)
-    private Employee creator;
+    private EmployeeEntity creator;
 }

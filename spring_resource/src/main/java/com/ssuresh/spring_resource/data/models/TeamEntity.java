@@ -10,17 +10,19 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.Getter;
 
+@Getter
 @Entity
 @Table(name = "teams")
-public class Team {
+public class TeamEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String teamId;
+    private String id;
 
     @Column
     private String teamName;
 
     @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
-    private List<Employee> employees;
+    private List<EmployeeEntity> employees;
 }
