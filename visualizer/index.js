@@ -34,7 +34,10 @@ function matchesUrlPattern(url, pattern) {
 
 function shouldLog(payload) {
     if (!payload) return true;
-    const { url, form_name, from_port } = payload;
+    const { url, form_name, from_port, type, to_name, to_port } = payload;
+
+    if (type === 'ws' && resolveNickname(to_name, to_port) === 'Angular-App') return false;
+
     if (Array.isArray(FILTERS.urls) && FILTERS.urls.length > 0 && typeof url === 'string') {
         for (const u of FILTERS.urls) {
             if (!u) continue;
@@ -61,19 +64,29 @@ function shouldLog(payload) {
     return true;
 }
 
-function resolveNickname(name, port) {
+function detectBrowser(userAgent) {
+    if (!userAgent) return null;
+    if (userAgent.includes('Firefox')) return 'Firefox';
+    if (userAgent.includes('Chrome')) return 'Chrome';
+    if (userAgent.includes('Safari')) return 'Safari';
+    if (userAgent.includes('Edge')) return 'Edge';
+    return 'Browser';
+}
+
+function resolveNickname(name, port, userAgent) {
     if (!name && (port == null)) return undefined;
+
     const key = `${name}:${port}`;
     let resolvedNickname = NICKNAME_MAP.get(key);
-    // if (!resolvedNickname) {
-    //     if (Number(port) > 32000) {
-    //         resolvedNickname = '(BROWSER)';
-    //     }
-    // }
+
+    if (!resolvedNickname) {
+        const browser = detectBrowser(userAgent);
+        return `BROWSER (${browser})`;
+    }
     return resolvedNickname || key;
 }
 
-function formatRecord(payload) {
+function formatRecord(payload, userAgent) {
     const {
         from_name,
         from_port,
@@ -90,7 +103,7 @@ function formatRecord(payload) {
         source: {
             name: from_name,
             port: from_port,
-            nickname: resolveNickname(from_name, from_port)
+            nickname: resolveNickname(from_name, from_port, userAgent)
         },
         destination: {
             name: to_name,
@@ -131,10 +144,12 @@ function createApp({ logger = console } = {}) {
 
     app.post('/', (req, res) => {
         const payload = req.body;
+
         if (!shouldLog(payload)) {
             return res.status(204).send();
         }
-        const record = formatRecord(payload);
+
+        const record = formatRecord(payload, userAgent);
         logRecord(record, logger);
         return res.status(204).send();
     });
