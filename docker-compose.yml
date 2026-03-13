@@ -4,7 +4,8 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/forwarder.js:/etc/nginx/forwarder.js:ro
   keycloak:
     image: quay.io/keycloak/keycloak
     command: start-dev --hostname=http://localhost/auth --proxy-headers xforwarded --import-realm
