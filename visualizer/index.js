@@ -8,6 +8,9 @@ const FILTERS = {
         /^\/@fs\//,
         /^\/@ng\//,
         /^\/@vite\//,
+        /\.well-known/,
+        /styles\.css/,
+        /main\.js/,
     ],
     form_names: [],
     from_ports: new Set()
@@ -70,7 +73,7 @@ function detectBrowser(userAgent) {
     if (userAgent.includes('Chrome')) return 'Chrome';
     if (userAgent.includes('Safari')) return 'Safari';
     if (userAgent.includes('Edge')) return 'Edge';
-    return 'Browser';
+    return null;
 }
 
 function resolveNickname(name, port, userAgent) {
@@ -81,12 +84,14 @@ function resolveNickname(name, port, userAgent) {
 
     if (!resolvedNickname) {
         const browser = detectBrowser(userAgent);
-        return `BROWSER (${browser})`;
+        if (browser) {
+            return browser;
+        }
     }
     return resolvedNickname || key;
 }
 
-function formatRecord(payload, userAgent) {
+function formatRecord(payload) {
     const {
         from_name,
         from_port,
@@ -97,7 +102,10 @@ function formatRecord(payload, userAgent) {
         body,
         form_name,
         type,
+        headers,
     } = payload || {};
+
+    const userAgent = headers ? headers['User-Agent'] : null;
 
     return {
         source: {
@@ -122,20 +130,26 @@ function formatRecord(payload, userAgent) {
 function logRecord(record, logger = console) {
     if (!record) return;
 
-    logger.log('--- New Intercepted Request ---');
-    logger.log(`Source:      ${record.source.nickname}`);
-    logger.log(`Destination: ${record.destination.nickname}`);
-    logger.log(`Action:      ${record.type} ${record.method} ${record.url}`);
+    // logger.log('--- New Intercepted Request ---');
+    // logger.log(`Source:      ${record.source.nickname}`);
+    // logger.log(`Destination: ${record.destination.nickname}`);
+    // logger.log(`Action:      ${record.type} ${record.method} ${record.url}`);
 
-    if (record.form_name) {
-        logger.log(`Form:        ${record.form_name}`);
-    }
+    // if (record.form_name) {
+    //     logger.log(`Form:        ${record.form_name}`);
+    // }
 
-    if (record.body) {
-        logger.log(`Payload:     ${record.body}`);
-    } else {
-        logger.log('Payload:     [Empty]');
-    }
+    // if (record.body) {
+    //     logger.log(`Payload:     ${record.body}`);
+    // } else {
+    //     logger.log('Payload:     [Empty]');
+    // }
+
+    /* 
+    Make the logs like:
+    source --(method URL)--> destination
+     */
+    logger.log(`${record.source.nickname} --(${record.method} ${record.url})--> ${record.destination.nickname}`);
 }
 
 function createApp({ logger = console } = {}) {
@@ -149,7 +163,7 @@ function createApp({ logger = console } = {}) {
             return res.status(204).send();
         }
 
-        const record = formatRecord(payload, userAgent);
+        const record = formatRecord(payload);
         logRecord(record, logger);
         return res.status(204).send();
     });
