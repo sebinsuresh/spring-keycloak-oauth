@@ -82,7 +82,8 @@ function formatRecord(payload) {
         method,
         url,
         body,
-        form_name
+        form_name,
+        type,
     } = payload || {};
 
     return {
@@ -100,7 +101,8 @@ function formatRecord(payload) {
         url,
         body,
         form_name,
-        raw: payload
+        raw: payload,
+        type,
     };
 }
 
@@ -110,7 +112,7 @@ function logRecord(record, logger = console) {
     logger.log('--- New Intercepted Request ---');
     logger.log(`Source:      ${record.source.nickname}`);
     logger.log(`Destination: ${record.destination.nickname}`);
-    logger.log(`Action:      ${record.method} ${record.url}`);
+    logger.log(`Action:      ${record.type} ${record.method} ${record.url}`);
 
     if (record.form_name) {
         logger.log(`Form:        ${record.form_name}`);
