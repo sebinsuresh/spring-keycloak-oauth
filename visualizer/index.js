@@ -11,6 +11,10 @@ const FILTERS = {
         /\.well-known/,
         /styles\.css/,
         /main\.js/,
+        /\.woff2$/,
+        /\.css$/,
+        /\.js$/,
+        /\.svg$/
     ],
     form_names: [],
     from_ports: new Set()
