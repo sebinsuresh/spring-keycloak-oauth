@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const PORT = 5000;
 
 // Global, mutable filters list — edit this at runtime to add/remove filters
@@ -162,6 +163,48 @@ function createApp({ logger = console } = {}) {
     const app = express();
     app.use(express.json({ limit: '10mb' }));
 
+    // In-memory store of slim records and connected SSE clients
+    const records = [];
+    const clients = new Set();
+
+    function broadcast(eventName, data) {
+        const frame = `event: ${eventName}\ndata: ${JSON.stringify(data)}\n\n`;
+        for (const client of clients) {
+            client.write(frame);
+        }
+    }
+
+    // Serve the frontend
+    app.use(express.static(path.join(__dirname, 'public')));
+
+    // Serve mermaid from node_modules
+    app.get('/mermaid.min.js', (req, res) => {
+        res.sendFile(path.join(__dirname, 'node_modules', 'mermaid', 'dist', 'mermaid.min.js'));
+    });
+
+    // SSE endpoint — replays history then streams live events
+    app.get('/events', (req, res) => {
+        res.setHeader('Content-Type', 'text/event-stream');
+        res.setHeader('Cache-Control', 'no-cache');
+        res.setHeader('Connection', 'keep-alive');
+        res.flushHeaders();
+
+        // Replay existing records
+        for (const record of records) {
+            res.write(`event: message\ndata: ${JSON.stringify(record)}\n\n`);
+        }
+
+        clients.add(res);
+        req.on('close', () => clients.delete(res));
+    });
+
+    // Clear all records and notify all connected clients
+    app.post('/clear', (req, res) => {
+        records.length = 0;
+        broadcast('clear', {});
+        return res.status(204).send();
+    });
+
     app.post('/', (req, res) => {
         const payload = req.body;
 
@@ -171,6 +214,16 @@ function createApp({ logger = console } = {}) {
 
         const record = formatRecord(payload);
         logRecord(record, logger);
+
+        const slim = {
+            source: record.source.nickname,
+            destination: record.destination.nickname,
+            method: record.method,
+            url: record.url,
+        };
+        records.push(slim);
+        broadcast('message', slim);
+
         return res.status(204).send();
     });
 
