@@ -16,8 +16,6 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/employee")
 public class EmployeeController {
-    // TODO: models for svc &/ api layer
-    // TODO: implement these
 
     private final EmployeeService service;
 
@@ -28,6 +26,6 @@ public class EmployeeController {
 
     @GetMapping("/employeeId")
     public Employee getEmployeeId(@RequestParam String oidcUserId) {
-        return this.service.getEmployeeByOidcId(oidcUserId);
+        return service.getEmployeeByOidcId(oidcUserId);
     }
 }

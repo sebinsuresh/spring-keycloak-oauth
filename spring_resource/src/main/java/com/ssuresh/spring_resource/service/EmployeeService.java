@@ -7,6 +7,8 @@ import com.ssuresh.spring_resource.domain.Employee;
 public interface EmployeeService {
 
     Employee getEmployeeByOidcId(String oidcId);
-    
+
+    String getUserIdByOidcId(String oidcId);
+
     List<Employee> getEmployeesByTeam(String teamId);
 }

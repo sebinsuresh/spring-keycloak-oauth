@@ -28,10 +28,19 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public String getUserIdByOidcId(String oidcId) {
+        // TODO: improve query
+        var entity = repo.findByOidcUserId(oidcId);
+        return entity.getId();
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<Employee> getEmployeesByTeam(String teamId) {
         List<EmployeeEntity> employees = this.repo.findAllByTeamId(teamId);
-        return employees.stream().map(this::mappedToDomain).collect(Collectors.toList());
+        return employees.stream()
+                .map(this::mappedToDomain)
+                .collect(Collectors.toList());
     }
 
     private Employee mappedToDomain(EmployeeEntity entity) {
