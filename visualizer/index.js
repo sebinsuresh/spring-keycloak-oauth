@@ -67,12 +67,17 @@ function shouldLog(payload) {
     return true;
 }
 
-function detectBrowser(userAgent) {
+function detectSourceFromUserAgent(userAgent) {
     if (!userAgent) return null;
     if (userAgent.includes('Firefox')) return 'Firefox';
     if (userAgent.includes('Chrome')) return 'Chrome';
     if (userAgent.includes('Safari')) return 'Safari';
     if (userAgent.includes('Edge')) return 'Edge';
+
+    // For now need to assume this is BFF client and not some other app's Java client.
+    if (userAgent.includes('Java-http-client/21.0.9')) return 'Spring-BFF Http client 1';
+    if (userAgent.includes('Java/21.0.9')) return 'Spring-BFF Http client 2';
+
     return null;
 }
 
@@ -80,15 +85,16 @@ function resolveNickname(name, port, userAgent) {
     if (!name && (port == null)) return undefined;
 
     const key = `${name}:${port}`;
+    
     let resolvedNickname = NICKNAME_MAP.get(key);
-
     if (!resolvedNickname) {
-        const browser = detectBrowser(userAgent);
-        if (browser) {
-            return browser;
+        const detectedSource = detectSourceFromUserAgent(userAgent);
+        resolvedNickname = detectedSource;
+        if (!resolvedNickname) {
+            resolvedNickname = key + (userAgent ? ` (${userAgent})` : '');
         }
     }
-    return resolvedNickname || key;
+    return resolvedNickname;
 }
 
 function formatRecord(payload) {
@@ -145,10 +151,6 @@ function logRecord(record, logger = console) {
     //     logger.log('Payload:     [Empty]');
     // }
 
-    /* 
-    Make the logs like:
-    source --(method URL)--> destination
-     */
     logger.log(`${record.source.nickname} --(${record.method} ${record.url})--> ${record.destination.nickname}`);
 }
 
