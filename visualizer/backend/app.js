@@ -1,21 +1,10 @@
 import express, { json, static as static_ } from 'express';
 import { join } from 'path';
-import { shouldCapture } from './filter.js';
-import { createRecord } from './mappers.js';
-import { logRecord } from './logging.js';
+import { listenerRoutes } from './listener/routes.js';
+import state from './shared/state.js';
+import { UiClient } from './streamer/uiClient.js';
 
 export function createApp() {
-    // In-memory store of slim records and connected SSE clients
-    const records = [];
-    const clients = new Set();
-
-    function sendEventToClients(eventName, data) {
-        const frame = `event: ${eventName}\ndata: ${JSON.stringify(data)}\n\n`;
-        for (const client of clients) {
-            client.write(frame);
-        }
-    }
-
     const app = express();
 
     app.use(json({ limit: '10mb' }));
@@ -46,43 +35,18 @@ export function createApp() {
         res.setHeader('Connection', 'keep-alive');
         res.flushHeaders();
 
-        // Replay existing records
-        for (const record of records) {
-            res.write(`event: message\ndata: ${JSON.stringify(record)}\n\n`);
-        }
-
-        clients.add(res);
-        req.on('close', () => clients.delete(res));
+        const sseClient = new UiClient(res);
+        state.registerClient(sseClient);
+        req.on('close', () => state.unregisterClient(sseClient));
     });
 
     // Clear all records and notify all connected clients
     app.post('/events/clear', (req, res) => {
-        records.length = 0;
-        sendEventToClients('clear', {});
+        state.clearRecords();
         return res.status(204).send();
     });
 
-    app.post('/events/register', (req, res) => {
-        const payload = req.body;
-
-        if (!shouldCapture(payload)) {
-            return res.status(204).send();
-        }
-
-        const record = createRecord(payload);
-        logRecord(record);
-
-        const slim = {
-            source: record.source.nickname,
-            destination: record.destination.nickname,
-            method: record.method,
-            url: record.url,
-        };
-        records.push(slim);
-        sendEventToClients('message', slim);
-
-        return res.status(204).send();
-    });
+    app.use('/capture', listenerRoutes);
 
     return app;
 }
