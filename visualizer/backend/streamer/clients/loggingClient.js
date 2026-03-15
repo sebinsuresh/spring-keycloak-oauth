@@ -1,7 +1,7 @@
-import { CLEAR_RECORDS, NEW_MESSAGE } from "../shared/state.js";
-import { Client } from "./clientInterface.js";
+import { CLEAR_RECORDS, NEW_MESSAGE } from "../../shared/state.js";
+import Client from "./clientInterface.js";
 
-export class LoggingClient extends Client {
+export default class LoggingClient extends Client {
     handleEvent(event) {
         const data = event.data;
 

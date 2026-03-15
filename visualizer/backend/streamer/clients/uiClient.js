@@ -1,7 +1,7 @@
-import { CLEAR_RECORDS, NEW_MESSAGE } from "../shared/state.js";
-import { Client } from "./clientInterface.js";
+import { CLEAR_RECORDS, NEW_MESSAGE } from "../../shared/state.js";
+import Client from "./clientInterface.js";
 
-export class UiClient extends Client {
+export default class UiClient extends Client {
     constructor(backingRes) {
         super();
         this._backingRes = backingRes;

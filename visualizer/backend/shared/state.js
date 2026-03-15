@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
-import { Client } from '../streamer/clientInterface.js';
-import { LoggingClient } from '../streamer/loggingClient.js';
+import Client from '../streamer/clients/clientInterface.js';
+import LoggingClient from '../streamer/clients/loggingClient.js';
 
 // STATE EVENTS
 export const RECORDS_CHANGE = 'recordChanged';
@@ -63,5 +63,5 @@ class State {
     }
 }
 
-const state = new State();
-export default state;
+const sharedState = new State();
+export default sharedState;
